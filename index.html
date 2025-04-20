@@ -3,20 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Treino Tracker</title>
+  <title>TreinoTracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Garantir que nomes dos exercícios sejam selecionáveis */
+    .exercise-name {
+      user-select: text;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 p-6 min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-200 p-6 min-h-screen transition-colors duration-300">
   <header class="text-center mb-8">
-    <h1 class="text-4xl font-bold text-indigo-600">Treino Tracker</h1>
-    <p class="text-lg text-gray-600 mt-2">Acompanhe seu progresso semanal</p>
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-4xl font-bold text-indigo-600 dark:text-indigo-400">TreinoTracker</h1>
+      <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" aria-label="Alternar modo escuro">
+        <span class="sun-icon">☀️</span>
+        <span class="moon-icon hidden">🌙</span>
+      </button>
+    </div>
+    <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">Acompanhe seu progresso semanal</p>
   </header>
 
   <div class="max-w-6xl mx-auto">
     <div class="flex justify-center mb-8">
       <div class="w-full max-w-md">
-        <label for="workout-select" class="block text-lg font-medium text-gray-700 mb-2">Selecione o treino:</label>
-        <select id="workout-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+        <label for="workout-select" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Selecione o treino:</label>
+        <select id="workout-select" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
           <option value="">--Selecione--</option>
           <option value="segunda">Segunda: Pernas + Abdômen</option>
           <option value="terca">Terça: Peito + Tríceps + Corrida</option>
@@ -29,66 +41,70 @@
     </div>
 
     <div class="flex justify-center mb-6">
-      <div class="text-lg font-medium text-gray-700">
+      <button id="start-workout-btn" class="hidden bg-green-500 dark:bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 dark:hover:bg-green-700">Iniciar Treino</button>
+    </div>
+
+    <div class="flex justify-center mb-6">
+      <div class="text-lg font-medium text-gray-700 dark:text-gray-300">
         Tempo do Treino: <span id="workout-timer" class="font-mono">00:00:00</span>
       </div>
     </div>
 
-    <h2 id="page-title" class="text-2xl font-semibold text-center mb-6">Escolha um treino acima</h2>
+    <h2 id="page-title" class="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-gray-200">Escolha um treino acima</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="exercises"></div>
 
     <div class="text-center mt-8">
-      <button id="finalize-btn" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Finalizar Treino</button>
+      <button id="finalize-btn" class="hidden bg-indigo-600 dark:bg-indigo-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 dark:hover:bg-indigo-600">Finalizar Treino</button>
     </div>
 
     <div class="mt-12">
-      <h2 class="text-2xl font-semibold text-center mb-6">Último Treino</h2>
-      <div id="last-workout" class="bg-white rounded-lg shadow-lg p-6"></div>
+      <h2 class="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-gray-200">Último Treino</h2>
+      <div id="last-workout" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"></div>
     </div>
 
     <div class="mt-12">
-      <h2 class="text-2xl font-semibold text-center mb-6">Glossário de Termos Técnicos</h2>
-      <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-gray-200">Glossário de Termos Técnicos</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <dl class="space-y-4">
           <div>
-            <dt class="font-semibold text-lg">Excêntrico</dt>
-            <dd class="text-gray-600">Fase de alongamento do músculo durante um exercício, como ao descer a barra em um supino.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Excêntrico</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Fase de alongamento do músculo durante um exercício, como ao descer a barra em um supino.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">Concêntrico</dt>
-            <dd class="text-gray-600">Fase de contração do músculo, como ao empurrar a barra para cima em um supino.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Concêntrico</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Fase de contração do músculo, como ao empurrar a barra para cima em um supino.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">FCmáx</dt>
-            <dd class="text-gray-600">Frequência cardíaca máxima, estimada como 220 menos sua idade, usada para medir a intensidade do cardio.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">FCmáx</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Frequência cardíaca máxima, estimada como 220 menos sua idade, usada para medir a intensidade do cardio.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">Déficit leve</dt>
-            <dd class="text-gray-600">Redução leve de calorias (ex.: 250 kcal abaixo da manutenção) para perda de gordura, preservando músculos.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Déficit leve</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Redução leve de calorias (ex.: 250 kcal abaixo da manutenção) para perda de gordura, preservando músculos.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">Carga</dt>
-            <dd class="text-gray-600">Peso usado no exercício, como halteres ou barras, que pode ser aumentado para progressão.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Carga</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Peso usado no exercício, como halteres ou barras, que pode ser aumentado para progressão.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">Intervalos</dt>
-            <dd class="text-gray-600">Períodos de descanso entre séries, geralmente 60–75 segundos para musculação.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Intervalos</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Períodos de descanso entre séries, geralmente 60–75 segundos para musculação.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">Série</dt>
-            <dd class="text-gray-600">Grupo de repetições realizadas sem pausa, como 10 agachamentos em uma série.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Série</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Grupo de repetições realizadas sem pausa, como 10 agachamentos em uma série.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">Reps (Repetições)</dt>
-            <dd class="text-gray-600">Número de vezes que um exercício é executado em uma série, como 12 repetições de supino.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Reps (Repetições)</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Número de vezes que um exercício é executado em uma série, como 12 repetições de supino.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">HIIT</dt>
-            <dd class="text-gray-600">Treino intervalado de alta intensidade, alternando esforços intensos com recuperação, como sprints e caminhadas.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">HIIT</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Treino intervalado de alta intensidade, alternando esforços intensos com recuperação, como sprints e caminhadas.</dd>
           </div>
           <div>
-            <dt class="font-semibold text-lg">Core</dt>
-            <dd class="text-gray-600">Músculos do abdômen, lombar e pelve, essenciais para estabilidade em exercícios como prancha.</dd>
+            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Core</dt>
+            <dd class="text-gray-600 dark:text-gray-400">Músculos do abdômen, lombar e pelve, essenciais para estabilidade em exercícios como prancha.</dd>
           </div>
         </dl>
       </div>
@@ -96,17 +112,52 @@
   </div>
 
   <div id="hiit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-      <h3 class="text-xl font-semibold mb-4">HIIT 30s/30s</h3>
-      <div id="hiit-display" class="text-4xl font-mono mb-4">00:00</div>
-      <p id="hiit-phase" class="text-lg mb-4">Pronto para começar</p>
-      <button id="start-hiit" class="bg-green-500 text-white px-4 py-2 rounded-lg mr-2">Iniciar</button>
-      <button id="stop-hiit" class="bg-red-500 text-white px-4 py-2 rounded-lg mr-2">Parar</button>
-      <button id="close-hiit" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Fechar</button>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">HIIT 30s/30s</h3>
+      <div id="hiit-display" class="text-4xl font-mono mb-4 text-gray-800 dark:text-gray-200">00:00</div>
+      <p id="hiit-phase" class="text-lg mb-4 text-gray-600 dark:text-gray-400">Pronto para começar</p>
+      <button id="start-hiit" class="bg-green-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-green-600">Iniciar</button>
+      <button id="stop-hiit" class="bg-red-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-red-600">Parar</button>
+      <button id="close-hiit" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">Fechar</button>
     </div>
   </div>
 
   <script>
+    // Lógica de Dark Mode
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    const sunIcon = themeToggle.querySelector('.sun-icon');
+    const moonIcon = themeToggle.querySelector('.moon-icon');
+
+    // Carregar preferência salva ou do sistema
+    function initializeTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        html.classList.add('dark');
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      } else {
+        html.classList.remove('dark');
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      }
+    }
+
+    initializeTheme();
+
+    // Alternar tema
+    themeToggle.addEventListener('click', () => {
+      console.log('Toggling theme'); // Debug
+      html.classList.toggle('dark');
+      const isDark = html.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      sunIcon.classList.toggle('hidden', isDark);
+      moonIcon.classList.toggle('hidden', !isDark);
+      console.log('Theme set to:', isDark ? 'dark' : 'light'); // Debug
+    });
+
+    // Lógica do TreinoTracker
     const workouts = {
       'segunda': [
         { id: 'agachamento', name: 'Agachamento Livre', desc: 'Pés na largura do quadril, costas retas, desça até 90° nos joelhos.', sets: '4×10–12', currentSets: 0 },
@@ -162,6 +213,7 @@
     };
 
     const select = document.getElementById('workout-select');
+    const startWorkoutBtn = document.getElementById('start-workout-btn');
     const title = document.getElementById('page-title');
     const container = document.getElementById('exercises');
     const finalizeBtn = document.getElementById('finalize-btn');
@@ -179,6 +231,7 @@
     let hiitInterval = null;
     let hiitCycles = 0;
     let hiitRunning = false;
+    let currentDayKey = null;
 
     function formatTime(seconds) {
       const hrs = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -213,6 +266,25 @@
           hiitRunning = false;
           alert('HIIT concluído!');
           hiitModal.classList.add('hidden');
+          // Após concluir HIIT, simular conclusão da série
+          const hiitCard = document.getElementById('hiit');
+          if (hiitCard) {
+            const checkbox = hiitCard.querySelector('input[type="checkbox"]');
+            const incrementBtn = hiitCard.querySelector('.increment-set');
+            const maxSets = 1; // HIIT é 1 série
+            const progressKey = `workoutProgress-${currentDayKey}`;
+            let saved = JSON.parse(localStorage.getItem(progressKey) || '{}');
+            saved['hiit'] = saved['hiit'] || { currentSets: 0, completed: false };
+            saved['hiit'].currentSets = maxSets;
+            saved['hiit'].completed = true;
+            localStorage.setItem(progressKey, JSON.stringify(saved));
+            checkbox.disabled = false;
+            checkbox.checked = true;
+            checkbox.classList.add('border-green-500');
+            incrementBtn.disabled = true;
+            hiitCard.classList.add('opacity-50', 'line-through');
+            checkAllCompleted();
+          }
           return;
         }
         hiitPhase.textContent = 'Corrida Intensa!';
@@ -257,7 +329,7 @@
     function displayLastWorkout() {
       const lastWorkout = JSON.parse(localStorage.getItem('lastCompletedWorkout') || '{}');
       if (!lastWorkout.dayKey) {
-        lastWorkoutDiv.innerHTML = '<p class="text-gray-600">Nenhum treino concluído ainda.</p>';
+        lastWorkoutDiv.innerHTML = '<p class="text-gray-600 dark:text-gray-400">Nenhum treino concluído ainda.</p>';
         return;
       }
       const completedExercises = lastWorkout.exercises.filter(ex => ex.completed).map(ex => ex.name).join(', ');
@@ -269,8 +341,16 @@
       `;
     }
 
+    function checkAllCompleted() {
+      const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+      const allCompleted = Array.from(checkboxes).every(checkbox => checkbox.checked);
+      finalizeBtn.classList.toggle('hidden', !allCompleted);
+      console.log('All exercises completed:', allCompleted); // Debug
+    }
+
     function loadWorkout(dayKey) {
       console.log('Loading workout for:', dayKey); // Debug
+      currentDayKey = dayKey;
       localStorage.setItem('lastWorkout', dayKey);
       const exercises = workouts[dayKey] || [];
       const progressKey = `workoutProgress-${dayKey}`;
@@ -279,17 +359,16 @@
       container.innerHTML = '';
       if (!exercises.length) {
         title.textContent = 'Treino vazio!';
-        finalizeBtn.disabled = true;
+        finalizeBtn.classList.add('hidden');
         stopWorkoutTimer();
         return;
       }
       title.textContent = workoutLabels[dayKey];
-      finalizeBtn.disabled = false;
       startWorkoutTimer();
 
       exercises.forEach(ex => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300';
+        card.className = 'bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300';
         card.id = ex.id;
         if (saved[ex.id]?.completed) card.classList.add('opacity-50', 'line-through');
 
@@ -298,18 +377,19 @@
         const isCompleted = saved[ex.id]?.completed || false;
 
         card.innerHTML = `
-          <h2 class="text-xl font-semibold mb-3">${ex.name}</h2>
-          <p class="text-gray-600 mb-3">${ex.desc}</p>
-          <p class="text-gray-700 mb-3"><strong>Séries:</strong> ${ex.sets}</p>
+          <h2 class="text-xl font-semibold mb-3 exercise-name text-gray-800 dark:text-gray-200">${ex.name}</h2>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">${ex.desc}</p>
+          <p class="text-gray-700 dark:text-gray-300 mb-3"><strong>Séries:</strong> ${ex.sets}</p>
           <div class="flex items-center mb-4">
-            <button class="decrement-set bg-gray-300 text-gray-800 px-3 py-1 rounded-l-lg hover:bg-gray-400" ${currentSets <= 0 ? 'disabled' : ''}>-</button>
-            <span class="px-4 py-1 bg-gray-100">${currentSets}/${maxSets}</span>
-            <button class="increment-set bg-gray-300 text-gray-800 px-3 py-1 rounded-r-lg hover:bg-gray-400" ${currentSets >= maxSets ? 'disabled' : ''}>+</button>
+            <button class="decrement-set bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-l-lg hover:bg-gray-400 dark:hover:bg-gray-500" ${currentSets <= 0 ? 'disabled' : ''}>-</button>
+            <span class="px-4 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">${currentSets}/${maxSets}</span>
+            <button class="increment-set bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-r-lg hover:bg-gray-400 dark:hover:bg-gray-500" ${currentSets >= maxSets ? 'disabled' : ''}>+</button>
           </div>
           <label class="flex items-center mb-4">
-            <input type="checkbox" class="mr-2 w-5 h-5 ${currentSets >= maxSets ? 'border-green-500' : ''}" ${isCompleted ? 'checked' : ''} ${currentSets < maxSets ? 'disabled' : ''} /> Concluído
+            <input type="checkbox" class="mr-2 w-5 h-5 ${currentSets >= maxSets ? 'border-green-500' : ''}" ${isCompleted ? 'checked' : ''} ${currentSets < maxSets ? 'disabled' : ''} /> 
+            <span class="text-gray-700 dark:text-gray-300">Concluído</span>
           </label>
-          ${ex.hiit ? `<button class="start-hiit bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Iniciar HIIT</button>` : ''}
+          ${ex.hiit ? `<button class="start-hiit bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700">Iniciar HIIT</button>` : ''}
         `;
 
         const checkbox = card.querySelector('input[type="checkbox"]');
@@ -329,6 +409,7 @@
           card.classList.toggle('line-through', e.target.checked);
           localStorage.setItem(progressKey, JSON.stringify(saved));
           console.log(`Saved ${ex.name} completed: ${saved[ex.id].completed}`); // Debug
+          checkAllCompleted();
         });
 
         const incrementBtn = card.querySelector('.increment-set');
@@ -347,6 +428,7 @@
               checkbox.classList.add('border-green-500');
             }
             localStorage.setItem(progressKey, JSON.stringify(saved));
+            checkAllCompleted();
           }
         });
 
@@ -364,6 +446,7 @@
             card.classList.remove('opacity-50', 'line-through');
             if (saved[ex.id].currentSets <= 0) decrementBtn.disabled = true;
             localStorage.setItem(progressKey, JSON.stringify(saved));
+            checkAllCompleted();
           }
         });
 
@@ -374,47 +457,67 @@
         container.appendChild(card);
       });
 
-      finalizeBtn.onclick = () => {
-        const totalTime = stopWorkoutTimer();
-        const completedWorkout = {
-          dayKey,
-          date: new Date().toISOString(),
-          totalTime,
-          exercises: exercises.map(ex => ({
-            name: ex.name,
-            completed: saved[ex.id]?.completed || false
-          }))
-        };
-        localStorage.setItem('lastCompletedWorkout', JSON.stringify(completedWorkout));
-        localStorage.setItem(`completed-${dayKey}`, new Date().toISOString());
-        localStorage.removeItem(`workoutProgress-${dayKey}`); // Reset progress
-        alert('Treino finalizado! Progresso salvo.');
-        displayLastWorkout();
-        container.innerHTML = '';
-        title.textContent = 'Escolha um treino acima';
-        finalizeBtn.disabled = true;
-        select.value = '';
-      };
+      checkAllCompleted();
     }
 
     select.addEventListener('change', e => {
       const key = e.target.value;
       console.log('Selected workout:', key); // Debug
       if (key) {
-        loadWorkout(key);
+        startWorkoutBtn.classList.remove('hidden');
+        container.innerHTML = '';
+        title.textContent = workoutLabels[key];
+        finalizeBtn.classList.add('hidden');
+        stopWorkoutTimer();
       } else {
+        startWorkoutBtn.classList.add('hidden');
         container.innerHTML = '';
         title.textContent = 'Escolha um treino acima';
-        finalizeBtn.disabled = true;
+        finalizeBtn.classList.add('hidden');
         stopWorkoutTimer();
       }
+    });
+
+    startWorkoutBtn.addEventListener('click', () => {
+      const key = select.value;
+      if (key) {
+        loadWorkout(key);
+        startWorkoutBtn.classList.add('hidden');
+      }
+    });
+
+    finalizeBtn.addEventListener('click', () => {
+      const totalTime = stopWorkoutTimer();
+      const exercises = workouts[currentDayKey] || [];
+      const progressKey = `workoutProgress-${currentDayKey}`;
+      const saved = JSON.parse(localStorage.getItem(progressKey) || '{}');
+      const completedWorkout = {
+        dayKey: currentDayKey,
+        date: new Date().toISOString(),
+        totalTime,
+        exercises: exercises.map(ex => ({
+          name: ex.name,
+          completed: saved[ex.id]?.completed || false
+        }))
+      };
+      localStorage.setItem('lastCompletedWorkout', JSON.stringify(completedWorkout));
+      localStorage.setItem(`completed-${currentDayKey}`, new Date().toISOString());
+      localStorage.removeItem(`workoutProgress-${currentDayKey}`); // Reset progress
+      alert('Treino finalizado! Progresso salvo.');
+      displayLastWorkout();
+      container.innerHTML = '';
+      title.textContent = 'Escolha um treino acima';
+      finalizeBtn.classList.add('hidden');
+      select.value = '';
+      startWorkoutBtn.classList.add('hidden');
     });
 
     const last = localStorage.getItem('lastWorkout');
     if (last && workouts[last]) {
       console.log('Loading last workout:', last); // Debug
       select.value = last;
-      loadWorkout(last);
+      startWorkoutBtn.classList.remove('hidden');
+      title.textContent = workoutLabels[last];
     }
 
     displayLastWorkout();
