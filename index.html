@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treino Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 p-6 min-h-screen">
+  <header class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-indigo-600">Treino Tracker</h1>
+    <p class="text-lg text-gray-600 mt-2">Acompanhe seu progresso semanal</p>
+  </header>
+
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-center mb-8">
+      <div class="w-full max-w-md">
+        <label for="workout-select" class="block text-lg font-medium text-gray-700 mb-2">Selecione o treino:</label>
+        <select id="workout-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+          <option value="">--Selecione--</option>
+          <option value="segunda">Segunda: Pernas + Abdômen</option>
+          <option value="terca">Terça: Peito + Tríceps + Corrida</option>
+          <option value="quarta">Quarta: Costas + Bíceps + Abdômen</option>
+          <option value="quinta">Quinta: Futebol (Cardio)</option>
+          <option value="sexta">Sexta: Ombros + Trapézio + Abdômen + HIIT</option>
+          <option value="sabado">Sábado/Domingo: Descanso Ativo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex justify-center mb-6">
+      <div class="text-lg font-medium text-gray-700">
+        Tempo do Treino: <span id="workout-timer" class="font-mono">00:00:00</span>
+      </div>
+    </div>
+
+    <h2 id="page-title" class="text-2xl font-semibold text-center mb-6">Escolha um treino acima</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="exercises"></div>
+
+    <div class="text-center mt-8">
+      <button id="finalize-btn" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Finalizar Treino</button>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-semibold text-center mb-6">Último Treino</h2>
+      <div id="last-workout" class="bg-white rounded-lg shadow-lg p-6"></div>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-semibold text-center mb-6">Glossário de Termos Técnicos</h2>
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <dl class="space-y-4">
+          <div>
+            <dt class="font-semibold text-lg">Excêntrico</dt>
+            <dd class="text-gray-600">Fase de alongamento do músculo durante um exercício, como ao descer a barra em um supino.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">Concêntrico</dt>
+            <dd class="text-gray-600">Fase de contração do músculo, como ao empurrar a barra para cima em um supino.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">FCmáx</dt>
+            <dd class="text-gray-600">Frequência cardíaca máxima, estimada como 220 menos sua idade, usada para medir a intensidade do cardio.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">Déficit leve</dt>
+            <dd class="text-gray-600">Redução leve de calorias (ex.: 250 kcal abaixo da manutenção) para perda de gordura, preservando músculos.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">Carga</dt>
+            <dd class="text-gray-600">Peso usado no exercício, como halteres ou barras, que pode ser aumentado para progressão.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">Intervalos</dt>
+            <dd class="text-gray-600">Períodos de descanso entre séries, geralmente 60–75 segundos para musculação.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">Série</dt>
+            <dd class="text-gray-600">Grupo de repetições realizadas sem pausa, como 10 agachamentos em uma série.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">Reps (Repetições)</dt>
+            <dd class="text-gray-600">Número de vezes que um exercício é executado em uma série, como 12 repetições de supino.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">HIIT</dt>
+            <dd class="text-gray-600">Treino intervalado de alta intensidade, alternando esforços intensos com recuperação, como sprints e caminhadas.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-lg">Core</dt>
+            <dd class="text-gray-600">Músculos do abdômen, lombar e pelve, essenciais para estabilidade em exercícios como prancha.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div id="hiit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <h3 class="text-xl font-semibold mb-4">HIIT 30s/30s</h3>
+      <div id="hiit-display" class="text-4xl font-mono mb-4">00:00</div>
+      <p id="hiit-phase" class="text-lg mb-4">Pronto para começar</p>
+      <button id="start-hiit" class="bg-green-500 text-white px-4 py-2 rounded-lg mr-2">Iniciar</button>
+      <button id="stop-hiit" class="bg-red-500 text-white px-4 py-2 rounded-lg mr-2">Parar</button>
+      <button id="close-hiit" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    const workouts = {
+      'segunda': [
+        { id: 'agachamento', name: 'Agachamento Livre', desc: 'Pés na largura do quadril, costas retas, desça até 90° nos joelhos.', sets: '4×10–12', currentSets: 0 },
+        { id: 'legpress', name: 'Leg Press', desc: 'Pés no meio da plataforma, empurre controlando a descida.', sets: '3×12–15', currentSets: 0 },
+        { id: 'stiff', name: 'Stiff (Terra Romeno)', desc: 'Barra rente ao corpo, joelhos levemente flexionados.', sets: '3×10–12', currentSets: 0 },
+        { id: 'mesa-flexora', name: 'Mesa Flexora', desc: 'Almofada no tornozelo, puxe até contrair os isquiotibiais.', sets: '3×12–15', currentSets: 0 },
+        { id: 'panturrilha', name: 'Panturrilha em Pé', desc: 'Suba na ponta dos pés estendendo totalmente o tornozelo.', sets: '4×15–20', currentSets: 0 },
+        { id: 'prancha', name: 'Prancha', desc: 'Corpo alinhado, cotovelos apoiados, contraia o core.', sets: '3×45s', currentSets: 0 },
+        { id: 'elevacao-pernas', name: 'Elevação de Pernas Suspenso', desc: 'Segure a barra, eleve as pernas sem balançar.', sets: '3×15', currentSets: 0 }
+      ],
+      'terca': [
+        { id: 'supino-reto', name: 'Supino Reto', desc: 'Desça a barra até o peito, empurre até extensão completa.', sets: '4×10–12', currentSets: 0 },
+        { id: 'supino-inclinado', name: 'Supino Inclinado', desc: 'Bancada em 30–45°, foque na parte superior do peitoral.', sets: '3×12–15', currentSets: 0 },
+        { id: 'crucifixo', name: 'Crucifixo com Halteres', desc: 'Braços semi-flexionados, abra até sentir alongar peitoral.', sets: '3×12–15', currentSets: 0 },
+        { id: 'mergulho', name: 'Mergulho em Paralelas', desc: 'Corpo levemente inclinado à frente, desça controlando.', sets: '3×12–15', currentSets: 0 },
+        { id: 'triceps-pulley', name: 'Tríceps Pulley', desc: 'Mantenha cotovelos fixos, puxe até estender totalmente.', sets: '3×15–20', currentSets: 0 },
+        { id: 'corrida', name: 'Corrida Contínua', desc: '20 min em ritmo moderado (60–70% FCmáx).', sets: '1×20min', currentSets: 0 }
+      ],
+      'quarta': [
+        { id: 'puxada-frontal', name: 'Puxada Frontal', desc: 'Barra até o peito, costas retas e ombros para baixo.', sets: '4×10–12', currentSets: 0 },
+        { id: 'remada-curvada', name: 'Remada Curvada', desc: 'Costas quase paralelas ao chão, puxe o peso ao abdômen.', sets: '4×10–12', currentSets: 0 },
+        { id: 'remada-unilateral', name: 'Remada Unilateral', desc: 'Apoie uma mão, puxe haltere até a cintura.', sets: '3×12–15', currentSets: 0 },
+        { id: 'rosca-direta', name: 'Rosca Direta', desc: 'Cotovelos fixos, barra até a altura dos ombros.', sets: '3×10–12', currentSets: 0 },
+        { id: 'rosca-alternada', name: 'Rosca Alternada', desc: 'Suba um haltere de cada vez, gire o pulso.', sets: '3×12–15', currentSets: 0 },
+        { id: 'crunch', name: 'Crunch no Solo', desc: 'Eleve ombros do chão contraindo o abdômen.', sets: '3×20', currentSets: 0 },
+        { id: 'bicicleta', name: 'Abdominal Bicicleta', desc: 'Traga cotovelo ao joelho oposto alternando.', sets: '3×20', currentSets: 0 }
+      ],
+      'quinta': [
+        { id: 'futebol', name: 'Futebol (Cardio)', desc: 'Jogo com cardio natural, mantenha intensidade.', sets: '1×jogo', currentSets: 0 }
+      ],
+      'sexta': [
+        { id: 'desenvolvimento-militar', name: 'Desenvolvimento Militar', desc: 'Empurre halteres acima da cabeça com tronco firme.', sets: '4×10–12', currentSets: 0 },
+        { id: 'elevacao-lateral', name: 'Elevação Lateral', desc: 'Braços semi-flexionados, levante até a linha dos ombros.', sets: '3×12–15', currentSets: 0 },
+        { id: 'elevacao-frontal', name: 'Elevação Frontal', desc: 'Eleve halteres à frente até a altura dos ombros.', sets: '3×12–15', currentSets: 0 },
+        { id: 'remada-alta', name: 'Remada Alta', desc: 'Puxe barra rente ao corpo até o queixo.', sets: '3×10–12', currentSets: 0 },
+        { id: 'encolhimento', name: 'Encolhimento de Ombros', desc: 'Levante ombros em direção às orelhas.', sets: '4×12–15', currentSets: 0 },
+        { id: 'rollout', name: 'Roll-out com Roda', desc: 'Rolar a roda mantendo abdômen contraído.', sets: '2×12', currentSets: 0 },
+        { id: 'prancha-lateral', name: 'Prancha Lateral', desc: 'Apoie antebraço, alinhe corpo e segure.', sets: '2×30s', currentSets: 0 },
+        { id: 'hiit', name: 'HIIT (30s/30s ×10–12)', desc: '30s corrida intensa + 30s caminhada, 10–12 ciclos.', sets: '1×10–12min', currentSets: 0, hiit: true }
+      ],
+      'sabado': [
+        { id: 'descanso', name: 'Descanso Ativo', desc: 'Alongamento, mobilidade ou caminhada leve opcional.', sets: '1×5–10min', currentSets: 0 }
+      ]
+    };
+
+    const workoutLabels = {
+      'segunda': 'Segunda: Pernas + Abdômen',
+      'terca': 'Terça: Peito + Tríceps + Corrida',
+      'quarta': 'Quarta: Costas + Bíceps + Abdômen',
+      'quinta': 'Quinta: Futebol (Cardio)',
+      'sexta': 'Sexta: Ombros + Trapézio + Abdômen + HIIT',
+      'sabado': 'Sábado/Domingo: Descanso Ativo'
+    };
+
+    const select = document.getElementById('workout-select');
+    const title = document.getElementById('page-title');
+    const container = document.getElementById('exercises');
+    const finalizeBtn = document.getElementById('finalize-btn');
+    const workoutTimer = document.getElementById('workout-timer');
+    const lastWorkoutDiv = document.getElementById('last-workout');
+    const hiitModal = document.getElementById('hiit-modal');
+    const hiitDisplay = document.getElementById('hiit-display');
+    const hiitPhase = document.getElementById('hiit-phase');
+    const startHiitBtn = document.getElementById('start-hiit');
+    const stopHiitBtn = document.getElementById('stop-hiit');
+    const closeHiitBtn = document.getElementById('close-hiit');
+
+    let workoutInterval = null;
+    let workoutSeconds = 0;
+    let hiitInterval = null;
+    let hiitCycles = 0;
+    let hiitRunning = false;
+
+    function formatTime(seconds) {
+      const hrs = Math.floor(seconds / 3600).toString().padStart(2, '0');
+      const mins = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+      const secs = (seconds % 60).toString().padStart(2, '0');
+      return `${hrs}:${mins}:${secs}`;
+    }
+
+    function startWorkoutTimer() {
+      clearInterval(workoutInterval);
+      workoutSeconds = 0;
+      workoutTimer.textContent = formatTime(workoutSeconds);
+      workoutInterval = setInterval(() => {
+        workoutSeconds++;
+        workoutTimer.textContent = formatTime(workoutSeconds);
+      }, 1000);
+    }
+
+    function stopWorkoutTimer() {
+      clearInterval(workoutInterval);
+      return workoutSeconds;
+    }
+
+    function startHiit() {
+      hiitCycles = 0;
+      hiitRunning = true;
+      hiitModal.classList.remove('hidden');
+      const totalCycles = Math.floor(Math.random() * 3) + 10; // 10–12 ciclos
+      function runCycle() {
+        if (hiitCycles >= totalCycles) {
+          clearInterval(hiitInterval);
+          hiitRunning = false;
+          alert('HIIT concluído!');
+          hiitModal.classList.add('hidden');
+          return;
+        }
+        hiitPhase.textContent = 'Corrida Intensa!';
+        hiitDisplay.textContent = formatTime(30);
+        let time = 30;
+        hiitInterval = setInterval(() => {
+          time--;
+          hiitDisplay.textContent = formatTime(time);
+          if (time <= 0) {
+            clearInterval(hiitInterval);
+            hiitPhase.textContent = 'Caminhada';
+            hiitDisplay.textContent = formatTime(30);
+            time = 30;
+            hiitInterval = setInterval(() => {
+              time--;
+              hiitDisplay.textContent = formatTime(time);
+              if (time <= 0) {
+                clearInterval(hiitInterval);
+                hiitCycles++;
+                runCycle();
+              }
+            }, 1000);
+          }
+        }, 1000);
+      }
+      runCycle();
+    }
+
+    startHiitBtn.addEventListener('click', startHiit);
+
+    stopHiitBtn.addEventListener('click', () => {
+      clearInterval(hiitInterval);
+      hiitRunning = false;
+    });
+
+    closeHiitBtn.addEventListener('click', () => {
+      clearInterval(hiitInterval);
+      hiitRunning = false;
+      hiitModal.classList.add('hidden');
+    });
+
+    function displayLastWorkout() {
+      const lastWorkout = JSON.parse(localStorage.getItem('lastCompletedWorkout') || '{}');
+      if (!lastWorkout.dayKey) {
+        lastWorkoutDiv.innerHTML = '<p class="text-gray-600">Nenhum treino concluído ainda.</p>';
+        return;
+      }
+      const completedExercises = lastWorkout.exercises.filter(ex => ex.completed).map(ex => ex.name).join(', ');
+      lastWorkoutDiv.innerHTML = `
+        <p><strong>Dia:</strong> ${workoutLabels[lastWorkout.dayKey]}</p>
+        <p><strong>Data:</strong> ${new Date(lastWorkout.date).toLocaleString('pt-BR')}</p>
+        <p><strong>Tempo Total:</strong> ${formatTime(lastWorkout.totalTime)}</p>
+        <p><strong>Exercícios Concluídos:</strong> ${completedExercises || 'Nenhum'}</p>
+      `;
+    }
+
+    function loadWorkout(dayKey) {
+      console.log('Loading workout for:', dayKey); // Debug
+      localStorage.setItem('lastWorkout', dayKey);
+      const exercises = workouts[dayKey] || [];
+      const progressKey = `workoutProgress-${dayKey}`;
+      let saved = JSON.parse(localStorage.getItem(progressKey) || '{}');
+
+      container.innerHTML = '';
+      if (!exercises.length) {
+        title.textContent = 'Treino vazio!';
+        finalizeBtn.disabled = true;
+        stopWorkoutTimer();
+        return;
+      }
+      title.textContent = workoutLabels[dayKey];
+      finalizeBtn.disabled = false;
+      startWorkoutTimer();
+
+      exercises.forEach(ex => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300';
+        card.id = ex.id;
+        if (saved[ex.id]?.completed) card.classList.add('opacity-50', 'line-through');
+
+        const maxSets = parseInt(ex.sets.split('×')[0]) || 1;
+        const currentSets = saved[ex.id]?.currentSets || ex.currentSets || 0;
+        const isCompleted = saved[ex.id]?.completed || false;
+
+        card.innerHTML = `
+          <h2 class="text-xl font-semibold mb-3">${ex.name}</h2>
+          <p class="text-gray-600 mb-3">${ex.desc}</p>
+          <p class="text-gray-700 mb-3"><strong>Séries:</strong> ${ex.sets}</p>
+          <div class="flex items-center mb-4">
+            <button class="decrement-set bg-gray-300 text-gray-800 px-3 py-1 rounded-l-lg hover:bg-gray-400" ${currentSets <= 0 ? 'disabled' : ''}>-</button>
+            <span class="px-4 py-1 bg-gray-100">${currentSets}/${maxSets}</span>
+            <button class="increment-set bg-gray-300 text-gray-800 px-3 py-1 rounded-r-lg hover:bg-gray-400" ${currentSets >= maxSets ? 'disabled' : ''}>+</button>
+          </div>
+          <label class="flex items-center mb-4">
+            <input type="checkbox" class="mr-2 w-5 h-5 ${currentSets >= maxSets ? 'border-green-500' : ''}" ${isCompleted ? 'checked' : ''} ${currentSets < maxSets ? 'disabled' : ''} /> Concluído
+          </label>
+          ${ex.hiit ? `<button class="start-hiit bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Iniciar HIIT</button>` : ''}
+        `;
+
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        const setCounterSpan = card.querySelector('span');
+
+        checkbox.addEventListener('change', e => {
+          const latestSets = saved[ex.id]?.currentSets || 0;
+          console.log(`Checkbox change for ${ex.name}: checked=${e.target.checked}, currentSets=${latestSets}, maxSets=${maxSets}`); // Debug
+          if (latestSets < maxSets && e.target.checked) {
+            alert('Complete todas as séries antes de marcar como concluído!');
+            e.target.checked = false;
+            return;
+          }
+          saved[ex.id] = saved[ex.id] || { currentSets: latestSets, completed: false };
+          saved[ex.id].completed = e.target.checked;
+          card.classList.toggle('opacity-50', e.target.checked);
+          card.classList.toggle('line-through', e.target.checked);
+          localStorage.setItem(progressKey, JSON.stringify(saved));
+          console.log(`Saved ${ex.name} completed: ${saved[ex.id].completed}`); // Debug
+        });
+
+        const incrementBtn = card.querySelector('.increment-set');
+        const decrementBtn = card.querySelector('.decrement-set');
+
+        incrementBtn.addEventListener('click', () => {
+          saved[ex.id] = saved[ex.id] || { currentSets: 0, completed: false };
+          if (saved[ex.id].currentSets < maxSets) {
+            saved[ex.id].currentSets++;
+            console.log(`Incremented ${ex.name}: ${saved[ex.id].currentSets}/${maxSets}`); // Debug
+            setCounterSpan.textContent = `${saved[ex.id].currentSets}/${maxSets}`;
+            decrementBtn.disabled = false;
+            if (saved[ex.id].currentSets >= maxSets) {
+              incrementBtn.disabled = true;
+              checkbox.disabled = false;
+              checkbox.classList.add('border-green-500');
+            }
+            localStorage.setItem(progressKey, JSON.stringify(saved));
+          }
+        });
+
+        decrementBtn.addEventListener('click', () => {
+          saved[ex.id] = saved[ex.id] || { currentSets: 0, completed: false };
+          if (saved[ex.id].currentSets > 0) {
+            saved[ex.id].currentSets--;
+            saved[ex.id].completed = false; // Reset completed status
+            console.log(`Decremented ${ex.name}: ${saved[ex.id].currentSets}/${maxSets}`); // Debug
+            setCounterSpan.textContent = `${saved[ex.id].currentSets}/${maxSets}`;
+            incrementBtn.disabled = false;
+            checkbox.disabled = true;
+            checkbox.checked = false;
+            checkbox.classList.remove('border-green-500');
+            card.classList.remove('opacity-50', 'line-through');
+            if (saved[ex.id].currentSets <= 0) decrementBtn.disabled = true;
+            localStorage.setItem(progressKey, JSON.stringify(saved));
+          }
+        });
+
+        if (ex.hiit) {
+          card.querySelector('.start-hiit').addEventListener('click', startHiit);
+        }
+
+        container.appendChild(card);
+      });
+
+      finalizeBtn.onclick = () => {
+        const totalTime = stopWorkoutTimer();
+        const completedWorkout = {
+          dayKey,
+          date: new Date().toISOString(),
+          totalTime,
+          exercises: exercises.map(ex => ({
+            name: ex.name,
+            completed: saved[ex.id]?.completed || false
+          }))
+        };
+        localStorage.setItem('lastCompletedWorkout', JSON.stringify(completedWorkout));
+        localStorage.setItem(`completed-${dayKey}`, new Date().toISOString());
+        localStorage.removeItem(`workoutProgress-${dayKey}`); // Reset progress
+        alert('Treino finalizado! Progresso salvo.');
+        displayLastWorkout();
+        container.innerHTML = '';
+        title.textContent = 'Escolha um treino acima';
+        finalizeBtn.disabled = true;
+        select.value = '';
+      };
+    }
+
+    select.addEventListener('change', e => {
+      const key = e.target.value;
+      console.log('Selected workout:', key); // Debug
+      if (key) {
+        loadWorkout(key);
+      } else {
+        container.innerHTML = '';
+        title.textContent = 'Escolha um treino acima';
+        finalizeBtn.disabled = true;
+        stopWorkoutTimer();
+      }
+    });
+
+    const last = localStorage.getItem('lastWorkout');
+    if (last && workouts[last]) {
+      console.log('Loading last workout:', last); // Debug
+      select.value = last;
+      loadWorkout(last);
+    }
+
+    displayLastWorkout();
+  </script>
+</body>
+</html>
