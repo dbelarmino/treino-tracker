@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4f46e5" />
   <title>TreinoTracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="/treino-tracker/manifest.json" />
+  <link rel="icon" href="/treino-tracker/icon.png" />
   <style>
-    /* Garantir que nomes dos exercícios sejam selecionáveis */
     .exercise-name {
       user-select: text;
     }
@@ -62,50 +64,24 @@
       <div id="last-workout" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"></div>
     </div>
 
+    <div class="text-center mt-8">
+      <button id="clear-data-btn" class="bg-red-500 dark:bg-red-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-600 dark:hover:bg-red-700" aria-label="Limpar todos os dados">Limpar Dados</button>
+    </div>
+
     <div class="mt-12">
       <h2 class="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-gray-200">Glossário de Termos Técnicos</h2>
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <dl class="space-y-4">
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Excêntrico</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Fase de alongamento do músculo durante um exercício, como ao descer a barra em um supino.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Concêntrico</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Fase de contração do músculo, como ao empurrar a barra para cima em um supino.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">FCmáx</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Frequência cardíaca máxima, estimada como 220 menos sua idade, usada para medir a intensidade do cardio.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Déficit leve</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Redução leve de calorias (ex.: 250 kcal abaixo da manutenção) para perda de gordura, preservando músculos.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Carga</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Peso usado no exercício, como halteres ou barras, que pode ser aumentado para progressão.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Intervalos</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Períodos de descanso entre séries, geralmente 60–75 segundos para musculação.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Série</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Grupo de repetições realizadas sem pausa, como 10 agachamentos em uma série.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Reps (Repetições)</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Número de vezes que um exercício é executado em uma série, como 12 repetições de supino.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">HIIT</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Treino intervalado de alta intensidade, alternando esforços intensos com recuperação, como sprints e caminhadas.</dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Core</dt>
-            <dd class="text-gray-600 dark:text-gray-400">Músculos do abdômen, lombar e pelve, essenciais para estabilidade em exercícios como prancha.</dd>
-          </div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Excêntrico</dt><dd class="text-gray-600 dark:text-gray-400">Fase de alongamento do músculo durante um exercício, como ao descer a barra em um supino.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Concêntrico</dt><dd class="text-gray-600 dark:text-gray-400">Fase de contração do músculo, como ao empurrar a barra para cima em um supino.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">FCmáx</dt><dd class="text-gray-600 dark:text-gray-400">Frequência cardíaca máxima, estimada como 220 menos sua idade, usada para medir a intensidade do cardio.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Déficit leve</dt><dd class="text-gray-600 dark:text-gray-400">Redução leve de calorias (ex.: 250 kcal abaixo da manutenção) para perda de gordura, preservando músculos.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Carga</dt><dd class="text-gray-600 dark:text-gray-400">Peso usado no exercício, como halteres ou barras, que pode ser aumentado para progressão.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Intervalos</dt><dd class="text-gray-600 dark:text-gray-400">Períodos de descanso entre séries, geralmente 60–75 segundos para musculação.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Série</dt><dd class="text-gray-600 dark:text-gray-400">Grupo de repetições realizadas sem pausa, como 10 agachamentos em uma série.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Reps (Repetições)</dt><dd class="text-gray-600 dark:text-gray-400">Número de vezes que um exercício é executado em uma série, como 12 repetições de supino.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">HIIT</dt><dd class="text-gray-600 dark:text-gray-400">Treino intervalado de alta intensidade, alternando esforços intensos com recuperação, como sprints e caminhadas.</dd></div>
+          <div><dt class="font-semibold text-lg text-gray-800 dark:text-gray-200">Core</dt><dd class="text-gray-600 dark:text-gray-400">Músculos do abdômen, lombar e pelve, essenciais para estabilidade em exercícios como prancha.</dd></div>
         </dl>
       </div>
     </div>
@@ -129,32 +105,23 @@
     const sunIcon = themeToggle.querySelector('.sun-icon');
     const moonIcon = themeToggle.querySelector('.moon-icon');
 
-    // Carregar preferência salva ou do sistema
+    function setTheme(isDark) {
+      html.classList.toggle('dark', isDark);
+      sunIcon.classList.toggle('hidden', isDark);
+      moonIcon.classList.toggle('hidden', !isDark);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
     function initializeTheme() {
       const savedTheme = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-        html.classList.add('dark');
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-      } else {
-        html.classList.remove('dark');
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-      }
+      setTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
     }
 
     initializeTheme();
 
-    // Alternar tema
     themeToggle.addEventListener('click', () => {
-      console.log('Toggling theme'); // Debug
-      html.classList.toggle('dark');
-      const isDark = html.classList.contains('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      sunIcon.classList.toggle('hidden', isDark);
-      moonIcon.classList.toggle('hidden', !isDark);
-      console.log('Theme set to:', isDark ? 'dark' : 'light'); // Debug
+      setTheme(!html.classList.contains('dark'));
     });
 
     // Lógica do TreinoTracker
@@ -219,6 +186,7 @@
     const finalizeBtn = document.getElementById('finalize-btn');
     const workoutTimer = document.getElementById('workout-timer');
     const lastWorkoutDiv = document.getElementById('last-workout');
+    const clearDataBtn = document.getElementById('clear-data-btn');
     const hiitModal = document.getElementById('hiit-modal');
     const hiitDisplay = document.getElementById('hiit-display');
     const hiitPhase = document.getElementById('hiit-phase');
@@ -252,6 +220,7 @@
 
     function stopWorkoutTimer() {
       clearInterval(workoutInterval);
+      workoutTimer.textContent = formatTime(0);
       return workoutSeconds;
     }
 
@@ -266,12 +235,11 @@
           hiitRunning = false;
           alert('HIIT concluído!');
           hiitModal.classList.add('hidden');
-          // Após concluir HIIT, simular conclusão da série
           const hiitCard = document.getElementById('hiit');
           if (hiitCard) {
             const checkbox = hiitCard.querySelector('input[type="checkbox"]');
             const incrementBtn = hiitCard.querySelector('.increment-set');
-            const maxSets = 1; // HIIT é 1 série
+            const maxSets = 1;
             const progressKey = `workoutProgress-${currentDayKey}`;
             let saved = JSON.parse(localStorage.getItem(progressKey) || '{}');
             saved['hiit'] = saved['hiit'] || { currentSets: 0, completed: false };
@@ -341,15 +309,24 @@
       `;
     }
 
+    function resetInterface() {
+      select.value = '';
+      container.innerHTML = '';
+      title.textContent = 'Escolha um treino acima';
+      startWorkoutBtn.classList.add('hidden');
+      finalizeBtn.classList.add('hidden');
+      stopWorkoutTimer();
+      displayLastWorkout();
+      initializeTheme();
+    }
+
     function checkAllCompleted() {
       const checkboxes = container.querySelectorAll('input[type="checkbox"]');
       const allCompleted = Array.from(checkboxes).every(checkbox => checkbox.checked);
       finalizeBtn.classList.toggle('hidden', !allCompleted);
-      console.log('All exercises completed:', allCompleted); // Debug
     }
 
     function loadWorkout(dayKey) {
-      console.log('Loading workout for:', dayKey); // Debug
       currentDayKey = dayKey;
       localStorage.setItem('lastWorkout', dayKey);
       const exercises = workouts[dayKey] || [];
@@ -386,7 +363,7 @@
             <button class="increment-set bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-r-lg hover:bg-gray-400 dark:hover:bg-gray-500" ${currentSets >= maxSets ? 'disabled' : ''}>+</button>
           </div>
           <label class="flex items-center mb-4">
-            <input type="checkbox" class="mr-2 w-5 h-5 ${currentSets >= maxSets ? 'border-green-500' : ''}" ${isCompleted ? 'checked' : ''} ${currentSets < maxSets ? 'disabled' : ''} /> 
+            <input type="checkbox" class="mr-2 w-5 h-5 ${currentSets >= maxSets ? 'border-green-500' : ''}" ${isCompleted ? 'checked' : ''} ${currentSets < maxSets ? 'disabled' : ''} />
             <span class="text-gray-700 dark:text-gray-300">Concluído</span>
           </label>
           ${ex.hiit ? `<button class="start-hiit bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700">Iniciar HIIT</button>` : ''}
@@ -397,7 +374,6 @@
 
         checkbox.addEventListener('change', e => {
           const latestSets = saved[ex.id]?.currentSets || 0;
-          console.log(`Checkbox change for ${ex.name}: checked=${e.target.checked}, currentSets=${latestSets}, maxSets=${maxSets}`); // Debug
           if (latestSets < maxSets && e.target.checked) {
             alert('Complete todas as séries antes de marcar como concluído!');
             e.target.checked = false;
@@ -408,7 +384,6 @@
           card.classList.toggle('opacity-50', e.target.checked);
           card.classList.toggle('line-through', e.target.checked);
           localStorage.setItem(progressKey, JSON.stringify(saved));
-          console.log(`Saved ${ex.name} completed: ${saved[ex.id].completed}`); // Debug
           checkAllCompleted();
         });
 
@@ -419,7 +394,6 @@
           saved[ex.id] = saved[ex.id] || { currentSets: 0, completed: false };
           if (saved[ex.id].currentSets < maxSets) {
             saved[ex.id].currentSets++;
-            console.log(`Incremented ${ex.name}: ${saved[ex.id].currentSets}/${maxSets}`); // Debug
             setCounterSpan.textContent = `${saved[ex.id].currentSets}/${maxSets}`;
             decrementBtn.disabled = false;
             if (saved[ex.id].currentSets >= maxSets) {
@@ -436,8 +410,7 @@
           saved[ex.id] = saved[ex.id] || { currentSets: 0, completed: false };
           if (saved[ex.id].currentSets > 0) {
             saved[ex.id].currentSets--;
-            saved[ex.id].completed = false; // Reset completed status
-            console.log(`Decremented ${ex.name}: ${saved[ex.id].currentSets}/${maxSets}`); // Debug
+            saved[ex.id].completed = false;
             setCounterSpan.textContent = `${saved[ex.id].currentSets}/${maxSets}`;
             incrementBtn.disabled = false;
             checkbox.disabled = true;
@@ -462,7 +435,6 @@
 
     select.addEventListener('change', e => {
       const key = e.target.value;
-      console.log('Selected workout:', key); // Debug
       if (key) {
         startWorkoutBtn.classList.remove('hidden');
         container.innerHTML = '';
@@ -502,25 +474,36 @@
       };
       localStorage.setItem('lastCompletedWorkout', JSON.stringify(completedWorkout));
       localStorage.setItem(`completed-${currentDayKey}`, new Date().toISOString());
-      localStorage.removeItem(`workoutProgress-${currentDayKey}`); // Reset progress
+      localStorage.removeItem(`workoutProgress-${currentDayKey}`);
       alert('Treino finalizado! Progresso salvo.');
-      displayLastWorkout();
-      container.innerHTML = '';
-      title.textContent = 'Escolha um treino acima';
-      finalizeBtn.classList.add('hidden');
-      select.value = '';
-      startWorkoutBtn.classList.add('hidden');
+      resetInterface();
+    });
+
+    clearDataBtn.addEventListener('click', () => {
+      if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+        localStorage.clear();
+        resetInterface();
+        alert('Todos os dados foram limpos.');
+      }
     });
 
     const last = localStorage.getItem('lastWorkout');
     if (last && workouts[last]) {
-      console.log('Loading last workout:', last); // Debug
       select.value = last;
       startWorkoutBtn.classList.remove('hidden');
       title.textContent = workoutLabels[last];
     }
 
     displayLastWorkout();
+
+    // Registrar Service Worker para suporte offline
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/treino-tracker/sw.js')
+          .then(reg => console.log('Service Worker registrado'))
+          .catch(err => console.error('Erro ao registrar Service Worker:', err));
+      });
+    }
   </script>
 </body>
 </html>

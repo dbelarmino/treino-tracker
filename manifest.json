@@ -1,0 +1,20 @@
+{
+  "name": "TreinoTracker",
+  "short_name": "TreinoTracker",
+  "start_url": "/treino-tracker/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/treino-tracker/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/treino-tracker/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
