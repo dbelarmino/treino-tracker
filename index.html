@@ -7,7 +7,7 @@
   <title>TreinoTracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="manifest" href="/treino-tracker/manifest.json" />
-  <link rel="icon" href="/treino-tracker/icon.png" />
+  <link rel="icon" href="/treino-tracker/icon.png" type="image/png" />
   <style>
     .exercise-name {
       user-select: text;
@@ -98,6 +98,17 @@
     </div>
   </div>
 
+  <div id="timer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <h3 id="timer-title" class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200"></h3>
+      <div id="timer-display" class="text-4xl font-mono mb-4 text-gray-800 dark:text-gray-200">00:00</div>
+      <p id="timer-series" class="text-lg mb-4 text-gray-600 dark:text-gray-400"></p>
+      <button id="start-timer" class="bg-green-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-green-600">Iniciar</button>
+      <button id="pause-timer" class="bg-yellow-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-yellow-600">Pausar</button>
+      <button id="close-timer" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">Fechar</button>
+    </div>
+  </div>
+
   <script>
     // Lógica de Dark Mode
     const html = document.documentElement;
@@ -115,13 +126,15 @@
     function initializeTheme() {
       const savedTheme = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
+      const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+      setTheme(isDark);
     }
 
     initializeTheme();
 
     themeToggle.addEventListener('click', () => {
-      setTheme(!html.classList.contains('dark'));
+      const isDark = !html.classList.contains('dark');
+      setTheme(isDark);
     });
 
     // Lógica do TreinoTracker
@@ -132,7 +145,7 @@
         { id: 'stiff', name: 'Stiff (Terra Romeno)', desc: 'Barra rente ao corpo, joelhos levemente flexionados.', sets: '3×10–12', currentSets: 0 },
         { id: 'mesa-flexora', name: 'Mesa Flexora', desc: 'Almofada no tornozelo, puxe até contrair os isquiotibiais.', sets: '3×12–15', currentSets: 0 },
         { id: 'panturrilha', name: 'Panturrilha em Pé', desc: 'Suba na ponta dos pés estendendo totalmente o tornozelo.', sets: '4×15–20', currentSets: 0 },
-        { id: 'prancha', name: 'Prancha', desc: 'Corpo alinhado, cotovelos apoiados, contraia o core.', sets: '3×45s', currentSets: 0 },
+        { id: 'prancha', name: 'Prancha', desc: 'Corpo alinhado, cotovelos apoiados, contraia o core.', sets: '3×45s', currentSets: 0, timer: { duration: 45, series: 3 } },
         { id: 'elevacao-pernas', name: 'Elevação de Pernas Suspenso', desc: 'Segure a barra, eleve as pernas sem balançar.', sets: '3×15', currentSets: 0 }
       ],
       'terca': [
@@ -141,7 +154,7 @@
         { id: 'crucifixo', name: 'Crucifixo com Halteres', desc: 'Braços semi-flexionados, abra até sentir alongar peitoral.', sets: '3×12–15', currentSets: 0 },
         { id: 'mergulho', name: 'Mergulho em Paralelas', desc: 'Corpo levemente inclinado à frente, desça controlando.', sets: '3×12–15', currentSets: 0 },
         { id: 'triceps-pulley', name: 'Tríceps Pulley', desc: 'Mantenha cotovelos fixos, puxe até estender totalmente.', sets: '3×15–20', currentSets: 0 },
-        { id: 'corrida', name: 'Corrida Contínua', desc: '20 min em ritmo moderado (60–70% FCmáx).', sets: '1×20min', currentSets: 0 }
+        { id: 'corrida', name: 'Corrida Contínua', desc: '20 min em ritmo moderado (60–70% FCmáx).', sets: '1×20min', currentSets: 0, timer: { duration: 20 * 60, series: 1 } }
       ],
       'quarta': [
         { id: 'puxada-frontal', name: 'Puxada Frontal', desc: 'Barra até o peito, costas retas e ombros para baixo.', sets: '4×10–12', currentSets: 0 },
@@ -161,12 +174,12 @@
         { id: 'elevacao-frontal', name: 'Elevação Frontal', desc: 'Eleve halteres à frente até a altura dos ombros.', sets: '3×12–15', currentSets: 0 },
         { id: 'remada-alta', name: 'Remada Alta', desc: 'Puxe barra rente ao corpo até o queixo.', sets: '3×10–12', currentSets: 0 },
         { id: 'encolhimento', name: 'Encolhimento de Ombros', desc: 'Levante ombros em direção às orelhas.', sets: '4×12–15', currentSets: 0 },
-        { id: 'rollout', name: 'Roll-out com Roda', desc: 'Rolar a roda mantendo abdômen contraído.', sets: '2×12', currentSets: 0 },
-        { id: 'prancha-lateral', name: 'Prancha Lateral', desc: 'Apoie antebraço, alinhe corpo e segure.', sets: '2×30s', currentSets: 0 },
+        { id: 'rollout', name: 'Roll-out com Roda', desc: 'Rolar a roda mantendo abdômen contraído.', sets: '2×12', currentSets: 0, timer: { duration: 12, series: 2 } },
+        { id: 'prancha-lateral', name: 'Prancha Lateral', desc: 'Apoie antebraço, alinhe corpo e segure.', sets: '2×30s', currentSets: 0, timer: { duration: 30, series: 2 } },
         { id: 'hiit', name: 'HIIT (30s/30s ×10–12)', desc: '30s corrida intensa + 30s caminhada, 10–12 ciclos.', sets: '1×10–12min', currentSets: 0, hiit: true }
       ],
       'sabado': [
-        { id: 'descanso', name: 'Descanso Ativo', desc: 'Alongamento, mobilidade ou caminhada leve opcional.', sets: '1×5–10min', currentSets: 0 }
+        { id: 'descanso', name: 'Descanso Ativo', desc: 'Alongamento, mobilidade ou caminhada leve opcional.', sets: '1×5–10min', currentSets: 0, timer: { duration: 7 * 60, series: 1 } }
       ]
     };
 
@@ -193,13 +206,27 @@
     const startHiitBtn = document.getElementById('start-hiit');
     const stopHiitBtn = document.getElementById('stop-hiit');
     const closeHiitBtn = document.getElementById('close-hiit');
+    const timerModal = document.getElementById('timer-modal');
+    const timerTitle = document.getElementById('timer-title');
+    const timerDisplay = document.getElementById('timer-display');
+    const timerSeries = document.getElementById('timer-series');
+    const startTimerBtn = document.getElementById('start-timer');
+    const pauseTimerBtn = document.getElementById('pause-timer');
+    const closeTimerBtn = document.getElementById('close-timer');
 
     let workoutInterval = null;
-    let workoutSeconds = 0;
+    let workoutStartTime = null;
     let hiitInterval = null;
     let hiitCycles = 0;
     let hiitRunning = false;
+    let timerInterval = null;
+    let timerRunning = false;
+    let timerPaused = false;
+    let timerSeconds = 0;
+    let currentSeries = 1;
+    let totalSeries = 1;
     let currentDayKey = null;
+    let currentExerciseId = null;
 
     function formatTime(seconds) {
       const hrs = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -208,20 +235,44 @@
       return `${hrs}:${mins}:${secs}`;
     }
 
+    function formatTimer(seconds) {
+      const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const secs = (seconds % 60).toString().padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function updateWorkoutTimer() {
+      const savedStartTime = localStorage.getItem('workoutStartTime');
+      if (savedStartTime) {
+        const start = new Date(savedStartTime);
+        const now = new Date();
+        const seconds = Math.floor((now - start) / 1000);
+        workoutTimer.textContent = formatTime(seconds);
+        if (!workoutInterval) {
+          workoutInterval = setInterval(() => {
+            const now = new Date();
+            const seconds = Math.floor((now - start) / 1000);
+            workoutTimer.textContent = formatTime(seconds);
+          }, 1000);
+        }
+      } else {
+        workoutTimer.textContent = formatTime(0);
+      }
+    }
+
     function startWorkoutTimer() {
       clearInterval(workoutInterval);
-      workoutSeconds = 0;
-      workoutTimer.textContent = formatTime(workoutSeconds);
-      workoutInterval = setInterval(() => {
-        workoutSeconds++;
-        workoutTimer.textContent = formatTime(workoutSeconds);
-      }, 1000);
+      workoutStartTime = new Date();
+      localStorage.setItem('workoutStartTime', workoutStartTime.toISOString());
+      updateWorkoutTimer();
     }
 
     function stopWorkoutTimer() {
       clearInterval(workoutInterval);
+      const seconds = workoutStartTime ? Math.floor((new Date() - new Date(workoutStartTime)) / 1000) : 0;
+      localStorage.removeItem('workoutStartTime');
       workoutTimer.textContent = formatTime(0);
-      return workoutSeconds;
+      return seconds;
     }
 
     function startHiit() {
@@ -281,6 +332,86 @@
       runCycle();
     }
 
+    function startExerciseTimer(exercise, card) {
+      const { duration, series } = exercise.timer;
+      timerTitle.textContent = `${exercise.name} - Temporizador`;
+      timerSeconds = duration;
+      currentSeries = 1;
+      totalSeries = series;
+      currentExerciseId = exercise.id;
+      timerSeries.textContent = `Série ${currentSeries} de ${totalSeries}`;
+      timerDisplay.textContent = formatTimer(timerSeconds);
+      timerModal.classList.remove('hidden');
+      startTimerBtn.textContent = 'Iniciar';
+      pauseTimerBtn.textContent = 'Pausar';
+      timerRunning = false;
+      timerPaused = false;
+
+      startTimerBtn.onclick = () => {
+        if (!timerRunning) {
+          timerRunning = true;
+          startTimerBtn.textContent = 'Reiniciar';
+          pauseTimerBtn.textContent = 'Pausar';
+          timerInterval = setInterval(() => {
+            if (!timerPaused) {
+              timerSeconds--;
+              timerDisplay.textContent = formatTimer(timerSeconds);
+              if (timerSeconds <= 0) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                const progressKey = `workoutProgress-${currentDayKey}`;
+                let saved = JSON.parse(localStorage.getItem(progressKey) || '{}');
+                saved[exercise.id] = saved[exercise.id] || { currentSets: 0, completed: false };
+                saved[exercise.id].currentSets++;
+                if (saved[exercise.id].currentSets >= totalSeries) {
+                  saved[exercise.id].completed = true;
+                  card.classList.add('opacity-50', 'line-through');
+                  card.querySelector('input[type="checkbox"]').checked = true;
+                  card.querySelector('input[type="checkbox"]').disabled = false;
+                  card.querySelector('input[type="checkbox"]').classList.add('border-green-500');
+                  card.querySelector('.increment-set').disabled = true;
+                  card.querySelector('.decrement-set').disabled = true;
+                }
+                card.querySelector('span').textContent = `${saved[exercise.id].currentSets}/${totalSeries}`;
+                localStorage.setItem(progressKey, JSON.stringify(saved));
+                checkAllCompleted();
+                if (currentSeries < totalSeries) {
+                  currentSeries++;
+                  timerSeconds = duration;
+                  timerSeries.textContent = `Série ${currentSeries} de ${totalSeries}`;
+                  timerDisplay.textContent = formatTimer(timerSeconds);
+                  startTimerBtn.textContent = 'Iniciar';
+                } else {
+                  alert(`${exercise.name} concluído!`);
+                  timerModal.classList.add('hidden');
+                }
+              }
+            }
+          }, 1000);
+        } else {
+          clearInterval(timerInterval);
+          timerSeconds = duration;
+          timerDisplay.textContent = formatTimer(timerSeconds);
+          timerRunning = false;
+          startTimerBtn.textContent = 'Iniciar';
+        }
+      };
+
+      pauseTimerBtn.onclick = () => {
+        if (timerRunning) {
+          timerPaused = !timerPaused;
+          pauseTimerBtn.textContent = timerPaused ? 'Retomar' : 'Pausar';
+        }
+      };
+
+      closeTimerBtn.onclick = () => {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerPaused = false;
+        timerModal.classList.add('hidden');
+      };
+    }
+
     startHiitBtn.addEventListener('click', startHiit);
 
     stopHiitBtn.addEventListener('click', () => {
@@ -316,8 +447,9 @@
       startWorkoutBtn.classList.add('hidden');
       finalizeBtn.classList.add('hidden');
       stopWorkoutTimer();
+      localStorage.removeItem('lastWorkout');
+      localStorage.removeItem('workoutStartTime');
       displayLastWorkout();
-      initializeTheme();
     }
 
     function checkAllCompleted() {
@@ -341,7 +473,11 @@
         return;
       }
       title.textContent = workoutLabels[dayKey];
-      startWorkoutTimer();
+      if (!localStorage.getItem('workoutStartTime')) {
+        startWorkoutTimer();
+      } else {
+        updateWorkoutTimer();
+      }
 
       exercises.forEach(ex => {
         const card = document.createElement('div');
@@ -367,6 +503,7 @@
             <span class="text-gray-700 dark:text-gray-300">Concluído</span>
           </label>
           ${ex.hiit ? `<button class="start-hiit bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700">Iniciar HIIT</button>` : ''}
+          ${ex.timer ? `<button class="start-timer bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700">Iniciar Temporizador</button>` : ''}
         `;
 
         const checkbox = card.querySelector('input[type="checkbox"]');
@@ -427,6 +564,10 @@
           card.querySelector('.start-hiit').addEventListener('click', startHiit);
         }
 
+        if (ex.timer) {
+          card.querySelector('.start-timer').addEventListener('click', () => startExerciseTimer(ex, card));
+        }
+
         container.appendChild(card);
       });
 
@@ -440,13 +581,14 @@
         container.innerHTML = '';
         title.textContent = workoutLabels[key];
         finalizeBtn.classList.add('hidden');
-        stopWorkoutTimer();
       } else {
         startWorkoutBtn.classList.add('hidden');
         container.innerHTML = '';
         title.textContent = 'Escolha um treino acima';
         finalizeBtn.classList.add('hidden');
-        stopWorkoutTimer();
+        if (!localStorage.getItem('workoutStartTime')) {
+          stopWorkoutTimer();
+        }
       }
     });
 
@@ -475,6 +617,7 @@
       localStorage.setItem('lastCompletedWorkout', JSON.stringify(completedWorkout));
       localStorage.setItem(`completed-${currentDayKey}`, new Date().toISOString());
       localStorage.removeItem(`workoutProgress-${currentDayKey}`);
+      localStorage.removeItem('lastWorkout');
       alert('Treino finalizado! Progresso salvo.');
       resetInterface();
     });
@@ -487,14 +630,22 @@
       }
     });
 
-    const last = localStorage.getItem('lastWorkout');
-    if (last && workouts[last]) {
-      select.value = last;
-      startWorkoutBtn.classList.remove('hidden');
-      title.textContent = workoutLabels[last];
+    function initializeWorkout() {
+      const lastWorkout = localStorage.getItem('lastWorkout');
+      const workoutStartTime = localStorage.getItem('workoutStartTime');
+      if (lastWorkout && workouts[lastWorkout] && workoutStartTime) {
+        select.value = lastWorkout;
+        title.textContent = workoutLabels[lastWorkout];
+        loadWorkout(lastWorkout);
+        startWorkoutBtn.classList.add('hidden');
+        updateWorkoutTimer();
+      } else {
+        displayLastWorkout();
+        updateWorkoutTimer();
+      }
     }
 
-    displayLastWorkout();
+    initializeWorkout();
 
     // Registrar Service Worker para suporte offline
     if ('serviceWorker' in navigator) {
